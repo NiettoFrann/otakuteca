@@ -10,11 +10,11 @@
 
 <br />
 
-<img src="https://img.shields.io/github/v/tag/NiettoFran/otakuteca?label=VERSI%C3%93N&color=FF6B9A&labelColor=14122B&style=flat-square" alt="Versión" />
+<img src="https://img.shields.io/github/v/tag/NiettoFrann/otakuteca?label=VERSI%C3%93N&color=FF6B9A&labelColor=14122B&style=flat-square" alt="Versión" />
 <img src="https://img.shields.io/website?url=https%3A%2F%2Fotakuteca.ntech.studio&label=SITIO&up_message=ONLINE&down_message=OFFLINE&up_color=5EE7FF&down_color=B0307A&labelColor=14122B&style=flat-square" alt="Estado del sitio" />
 <img src="https://img.shields.io/badge/DEPLOY-Vercel-9B8CFF?logo=vercel&logoColor=white&labelColor=14122B&style=flat-square" alt="Deploy: Vercel" />
 <img src="https://img.shields.io/badge/CAT%C3%81LOGO-100%25_manual-FFD66B?labelColor=14122B&style=flat-square" alt="Catálogo 100 % manual" />
-<img src="https://img.shields.io/github/last-commit/NiettoFran/otakuteca?label=%C3%9ALTIMO%20COMMIT&color=B0307A&labelColor=14122B&style=flat-square" alt="Último commit" />
+<img src="https://img.shields.io/github/last-commit/NiettoFrann/otakuteca?label=%C3%9ALTIMO%20COMMIT&color=B0307A&labelColor=14122B&style=flat-square" alt="Último commit" />
 
 <br />
 <br />
@@ -62,7 +62,7 @@ de anime y manga. Tiene dos caras:
 
 | Ítem                                  |                                                                                Estado                                                                                |
 | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| Versión actual                        |                                         [`v1.0.0`](https://github.com/NiettoFran/otakuteca/releases/tag/v1.0.0) · 2026-10-01                                         |
+| Versión actual                        |                                        [`v1.0.0`](https://github.com/NiettoFrann/otakuteca/releases/tag/v1.0.0) · 2026-10-01                                         |
 | Producción                            |                                      ![Online](https://img.shields.io/badge/ONLINE-5EE7FF?style=flat-square&labelColor=14122B)                                       |
 | Feature `001-otakuteca-catalog`       |                                   ![Publicada](https://img.shields.io/badge/PUBLICADA-FF6B9A?style=flat-square&labelColor=14122B)                                    |
 | Revisión visual responsive (T080)     |                                   ![Pendiente](https://img.shields.io/badge/PENDIENTE-FFD66B?style=flat-square&labelColor=14122B)                                    |
@@ -203,7 +203,7 @@ otakuteca/
 
 ```bash
 # 1. Clonar e instalar
-git clone https://github.com/NiettoFran/otakuteca.git
+git clone https://github.com/NiettoFrann/otakuteca.git
 cd otakuteca
 pnpm install
 
@@ -296,9 +296,9 @@ El proyecto sigue [Semantic Versioning](https://semver.org/lang/es/) y cada vers
 tag de git (`vX.Y.Z`). Los cambios de cada versión están documentados en el
 [**CHANGELOG**](CHANGELOG.md), con formato [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/).
 
-| Versión                                                                 |   Fecha    | Resumen                                                           |
-| :---------------------------------------------------------------------- | :--------: | :---------------------------------------------------------------- |
-| [`v1.0.0`](https://github.com/NiettoFran/otakuteca/releases/tag/v1.0.0) | 2026-10-01 | Primera versión: catálogo público, filtros, panel admin, Supabase |
+| Versión                                                                  |   Fecha    | Resumen                                                           |
+| :----------------------------------------------------------------------- | :--------: | :---------------------------------------------------------------- |
+| [`v1.0.0`](https://github.com/NiettoFrann/otakuteca/releases/tag/v1.0.0) | 2026-10-01 | Primera versión: catálogo público, filtros, panel admin, Supabase |
 
 ---
 
