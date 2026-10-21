@@ -62,7 +62,7 @@ de anime y manga. Tiene dos caras:
 
 | Ítem                                  |                                                                                Estado                                                                                |
 | :------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-| Versión actual                        |                                        [`v1.0.0`](https://github.com/NiettoFrann/otakuteca/releases/tag/v1.0.0) · 2026-10-01                                         |
+| Versión actual                        |                                        [`v1.0.1`](https://github.com/NiettoFrann/otakuteca/releases/tag/v1.0.1) · 2026-10-02                                         |
 | Producción                            |                                      ![Online](https://img.shields.io/badge/ONLINE-5EE7FF?style=flat-square&labelColor=14122B)                                       |
 | Feature `001-otakuteca-catalog`       |                                   ![Publicada](https://img.shields.io/badge/PUBLICADA-FF6B9A?style=flat-square&labelColor=14122B)                                    |
 | Revisión visual responsive (T080)     |                                   ![Pendiente](https://img.shields.io/badge/PENDIENTE-FFD66B?style=flat-square&labelColor=14122B)                                    |
@@ -298,6 +298,7 @@ tag de git (`vX.Y.Z`). Los cambios de cada versión están documentados en el
 
 | Versión                                                                  |   Fecha    | Resumen                                                           |
 | :----------------------------------------------------------------------- | :--------: | :---------------------------------------------------------------- |
+| [`v1.0.1`](https://github.com/NiettoFrann/otakuteca/releases/tag/v1.0.1) | 2026-10-02 | Arreglo de deep links en Vercel y README                          |
 | [`v1.0.0`](https://github.com/NiettoFrann/otakuteca/releases/tag/v1.0.0) | 2026-10-01 | Primera versión: catálogo público, filtros, panel admin, Supabase |
 
 ---
