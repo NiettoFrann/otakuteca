@@ -5,6 +5,14 @@ All notable changes to Otakuteca. Format based on
 
 ## [Unreleased]
 
+### Changed
+
+- Local seed split into per-table seeders under `supabase/seeds/` (genres, works and
+  work_genres), loaded in order from `supabase/config.toml`.
+- Local seed now loads the real catalog: 41 anime and 13 manga with covers, seasons or volumes,
+  episode or chapter counts and genres, over a catalog of 29 genres. Production still never runs
+  the seeders.
+
 ## [1.0.1] - 2026-10-02
 
 ### Fixed
