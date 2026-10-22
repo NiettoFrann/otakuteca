@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { BookOpen, Dices, ExternalLink, Tv } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router'
 
 import { EmptyState, ErrorState, RouletteReel, WorkDetail } from '@/components'
@@ -22,15 +22,35 @@ export const RoulettePage = () => {
   const [spun, setSpun] = useState(false)
   const picked = useRef<Work | null>(null)
   const pool = useRef<Work[]>([])
+  const loadedCovers = useRef(new Set<string>())
 
-  const candidates = works.filter((w) => w.status === 'pending' && w.type === type)
+  const candidates = useMemo(
+    () => works.filter((w) => w.status === 'pending' && w.type === type),
+    [works, type]
+  )
+
+  // Precarga las portadas: si no, cada tick cambia el src antes de que la imagen llegue y el
+  // carrete se queda congelado en la primera.
+  useEffect(() => {
+    for (const { cover_url } of candidates) {
+      if (loadedCovers.current.has(cover_url)) continue
+      const img = new Image()
+      img.onload = () => loadedCovers.current.add(cover_url)
+      img.src = cover_url
+    }
+  }, [candidates])
 
   useEffect(() => {
     if (!spinning) return
-    const tick = setInterval(
-      () => setPreview(pool.current[Math.floor(Math.random() * pool.current.length)]),
-      TICK_MS
-    )
+    const tick = setInterval(() => {
+      const ready = pool.current.filter((w) => loadedCovers.current.has(w.cover_url))
+      const options = ready.length > 1 ? ready : pool.current
+      setPreview((prev) => {
+        const others = options.filter((w) => w.id !== prev?.id)
+        const list = others.length > 0 ? others : options
+        return list[Math.floor(Math.random() * list.length)]
+      })
+    }, TICK_MS)
     const done = setTimeout(() => {
       setResult(picked.current)
       setSpinning(false)
