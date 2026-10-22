@@ -1,9 +1,7 @@
 -- SOLO PARA LA BASE LOCAL: lo aplican `supabase start` y `supabase db reset`.
 -- NUNCA se ejecuta en producción: allí el catálogo real se carga a mano desde /dashboard.
 
-insert into public.genres (name) values
-  ('Acción'), ('Aventura'), ('Fantasía'), ('Comedia'), ('Thriller'), ('Shōnen'), ('Fantasía oscura');
-
+-- Obras de prueba. Los géneros se asignan en 03_work_genres.sql.
 insert into public.works
   (title, type, status, cover_url, short_review, long_review, parts, total_units, progress, rating, is_favorite)
 values
@@ -31,23 +29,6 @@ values
    'anime', 'pending', 'https://picsum.photos/seed/isekai/450/600',
    'Una reseña breve bastante larga para comprobar que la tarjeta la recorta a tres líneas sin romper la grilla en ninguna pantalla. Sigue y sigue y sigue y sigue y sigue y sigue.',
    null, null, null, 0, null, false);
-
-insert into public.work_genres (work_id, genre_id)
-select w.id, g.id
-from (values
-  ('Frieren', 'anime', 'Fantasía'), ('Frieren', 'anime', 'Aventura'),
-  ('Fullmetal Alchemist: Brotherhood', 'anime', 'Acción'),
-  ('Fullmetal Alchemist: Brotherhood', 'anime', 'Fantasía'),
-  ('Shingeki no Kyojin', 'anime', 'Acción'),
-  ('Spy x Family', 'anime', 'Comedia'),
-  ('Mirai Nikki', 'anime', 'Thriller'),
-  ('Naruto', 'anime', 'Shōnen'),
-  ('Berserk', 'manga', 'Fantasía oscura'),
-  ('Naruto', 'manga', 'Shōnen'),
-  ('Chainsaw Man', 'manga', 'Acción')
-) as v (title, type, genre)
-join public.works w on w.title = v.title and w.type = v.type::public.work_type
-join public.genres g on g.name = v.genre;
 
 -- Ranking: 1 Shingeki no Kyojin, 2 Fullmetal Alchemist: Brotherhood
 update public.works set ranking_position = 1 where title = 'Shingeki no Kyojin' and type = 'anime';
