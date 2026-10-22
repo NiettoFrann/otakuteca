@@ -1,36 +1,195 @@
 -- SOLO PARA LA BASE LOCAL: lo aplican `supabase start` y `supabase db reset`.
 -- NUNCA se ejecuta en producción: allí el catálogo real se carga a mano desde /dashboard.
 
--- Obras de prueba. Los géneros se asignan en 03_work_genres.sql.
-insert into public.works
-  (title, type, status, cover_url, short_review, long_review, parts, total_units, progress, rating, is_favorite)
-values
-  ('Frieren', 'anime', 'in_progress', 'https://picsum.photos/seed/frieren/450/600',
-   'Melancólico y tranquilo, pero nunca aburrido.',
-   E'Habla del paso del tiempo y de lo que valen los vínculos.\nLa banda sonora es preciosa.',
-   1, 28, 12, 4.5, true),
-  ('Fullmetal Alchemist: Brotherhood', 'anime', 'completed', 'https://picsum.photos/seed/fmab/450/600',
-   'Una historia redonda de principio a fin.', null, 1, 64, 64, 5, true),
-  ('Shingeki no Kyojin', 'anime', 'completed', 'https://picsum.photos/seed/snk/450/600',
-   'Puro impacto y giros que lo dan vuelta todo.', null, 4, 87, 87, 4, true),
-  ('Spy x Family', 'anime', 'pending', 'https://picsum.photos/seed/spyxfamily/450/600',
-   null, null, null, null, 0, null, false),
-  ('Mirai Nikki', 'anime', 'dropped', 'https://picsum.photos/seed/mirainikki/450/600',
-   'La idea es buenísima, pero la ejecución se pierde.', null, 1, 26, 10, 2, false),
-  ('Naruto', 'anime', 'completed', 'https://picsum.photos/seed/naruto-anime/450/600',
-   null, null, null, 220, 220, 3.5, false),
-  ('Berserk', 'manga', 'in_progress', 'https://picsum.photos/seed/berserk/450/600',
-   'Oscuro, crudo y imposible de soltar.', null, null, null, 120, 5, true),
-  ('Naruto', 'manga', 'completed', 'https://picsum.photos/seed/naruto-manga/450/600',
-   null, null, 72, 700, 700, 4, false),
-  ('Chainsaw Man', 'manga', 'pending', 'https://picsum.photos/seed/chainsawman/450/600',
-   null, null, null, null, 0, null, false),
-  ('Un isekai con un título de más de 150 caracteres para probar que la tarjeta no se rompa ni deforme la grilla en ninguna pantalla, ni chica ni grande, nunca jamás',
-   'anime', 'pending', 'https://picsum.photos/seed/isekai/450/600',
-   'Una reseña breve bastante larga para comprobar que la tarjeta la recorta a tres líneas sin romper la grilla en ninguna pantalla. Sigue y sigue y sigue y sigue y sigue y sigue.',
-   null, null, null, 0, null, false);
+-- Obras. Los géneros se asignan en 03_work_genres.sql.
+-- Portadas, temporadas y episodios tomados a mano de AniList (octubre de 2026). Solo se cuentan
+-- las temporadas ya emitidas completas; One Piece sigue en emisión y cuenta los episodios emitidos.
+-- Tomos y capítulos de los mangas en emisión tomados de MangaUpdates en la misma fecha.
+-- En las obras completadas el trigger iguala el progreso al total de episodios.
 
--- Ranking: 1 Shingeki no Kyojin, 2 Fullmetal Alchemist: Brotherhood
-update public.works set ranking_position = 1 where title = 'Shingeki no Kyojin' and type = 'anime';
-update public.works set ranking_position = 2
-  where title = 'Fullmetal Alchemist: Brotherhood' and type = 'anime';
+-- Animes vistos
+insert into public.works (title, type, status, cover_url, parts, total_units, rating, is_favorite)
+values
+  ('The Eminence in Shadow', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx130298-YMdcKHytpWNH.jpg',
+   2, 32, 5, false),
+  ('My Hero Academia', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21459-nYh85uj2Fuwr.jpg',
+   8, 170, 5, false),
+  ('Black Clover', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97940-fyh8o7gNbha0.png',
+   1, 170, 5, true),
+  ('Tougen Anki', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx177474-oHil1yLWldfl.jpg',
+   1, 24, 5, true),
+  ('One Piece', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21-ELSYx3yMPcKM.jpg',
+   null, 1180, 5, true),
+  ('Naruto', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20-dE6UHbFFg1A5.jpg',
+   1, 220, 5, false),
+  ('Naruto: Shippuden', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx1735-kGfVm0YqCPcu.png',
+   1, 500, 5, false),
+  ('The Seven Deadly Sins', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20789-Ma5ouSYPkru9.jpg',
+   4, 100, 5, false),
+  ('The Seven Deadly Sins: Four Knights of the Apocalypse', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx148862-ctw1sn45I4ZX.png',
+   2, 36, 5, false),
+  ('Jujutsu Kaisen', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx113415-LHBAeoZDIsnF.jpg',
+   3, 59, 5, true),
+  ('Frieren', 'anime', 'in_progress',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154587-qQTzQnEJJ3oB.jpg',
+   2, 38, 3, false),
+  ('Sakamoto Days', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx177709-e5Qx6RlsBgD5.png',
+   1, 22, 5, false),
+  ('DanDaDan', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx171018-60q1B6GK2Ghb.jpg',
+   2, 24, 5, true),
+  ('Spy x Family', 'anime', 'in_progress',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx140960-Kb6R5nYQfjmP.jpg',
+   3, 50, 4, false),
+  ('La nobleza de las flores', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx181444-Ut9DDUZdfHwg.jpg',
+   1, 13, 5, false),
+  ('Demon Slayer', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx101922-WBsBl0ClmgYL.jpg',
+   5, 63, 5, true),
+  ('One Punch Man', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21087-B5DHjqZ3kW4b.jpg',
+   3, 36, 5, true),
+  ('The Apothecary Diaries', 'anime', 'in_progress',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx161645-QLbzHXiYRgV2.jpg',
+   2, 48, null, false),
+  ('Mashle', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx151801-XxVf22Le6C8o.png',
+   2, 24, 5, false),
+  ('Blue Lock', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx137822-U8naszP96vzC.png',
+   2, 38, 5, false),
+  ('My Dress-Up Darling', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx132405-qP7FQYGmNI3d.jpg',
+   2, 24, 5, false),
+  ('Kaiju No. 8', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx153288-25FBfFJzEQ5O.jpg',
+   2, 23, 5, false),
+  ('Solo Leveling', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx151807-it355ZgzquUd.png',
+   2, 25, 5, false),
+  ('Gachiakuta', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx178025-cWJKEsZynkil.jpg',
+   1, 24, 5, false),
+  ('Classroom of the Elite', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx98659-WNyPLIZDpGGY.jpg',
+   4, 54, 5, false),
+  ('Witch Hat Atelier', 'anime', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx147105-rwOX8qyUy8gV.jpg',
+   1, 13, 5, false);
+
+-- Animes pendientes
+insert into public.works (title, type, status, cover_url, parts, total_units, rating, is_favorite)
+values
+  ('Call of the Night', 'anime', 'pending',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx141391-M3ZgUKTPENUk.jpg',
+   2, 25, null, false),
+  ('Tokyo Revengers', 'anime', 'pending',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx120120-cWDmnmeEntSe.jpg',
+   3, 50, null, false),
+  ('Re:Zero', 'anime', 'pending',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21355-wRVUrGxpvIQQ.jpg',
+   4, 85, null, false),
+  ('Shangri-La Frontier', 'anime', 'pending',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx151970-xtIx3VqEk02X.jpg',
+   2, 50, null, false),
+  ('Dr. Stone', 'anime', 'pending',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx105333-GybuoSoOZfpH.jpg',
+   4, 94, null, false),
+  ('Mob Psycho 100', 'anime', 'pending',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx21507-6YUSbh2m0N1p.jpg',
+   3, 37, null, false),
+  ('Haikyu!!', 'anime', 'pending',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx20464-ooZUyBe4ptp9.png',
+   4, 85, null, false),
+  ('My Hero Academia: Vigilantes', 'anime', 'pending',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx185736-Ci6AiGwjKKtp.jpg',
+   2, 26, null, false),
+  ('Blue Exorcist', 'anime', 'pending',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx9919-nXS7JOZrWHfS.jpg',
+   5, 73, null, false),
+  ('Wistoria: Wand and Sword', 'anime', 'pending',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx174576-tpKcHG0eO6CS.jpg',
+   2, 24, null, false),
+  ('To Be Hero X', 'anime', 'pending',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx156092-yHqgQZOF2mbg.jpg',
+   1, 24, null, false),
+  ('Lord of Mysteries', 'anime', 'pending',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx137667-xQxzQRAerw53.jpg',
+   1, 13, null, false);
+
+-- Animes que no me gustaron
+insert into public.works (title, type, status, cover_url, parts, total_units, rating, is_favorite)
+values
+  ('Mushoku Tensei', 'anime', 'dropped',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx108465-1ANspF1EWyFx.jpg',
+   3, 62, 1, false),
+  ('Baki', 'anime', 'dropped',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx97888-tdZ1r7qN1DRs.jpg',
+   5, 103, 1, false),
+  ('Record of Ragnarok', 'anime', 'dropped',
+   'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx127399-AAH1pevCZLrB.jpg',
+   3, 42, 1, false);
+
+-- Mangas leídos y en curso
+insert into public.works (title, type, status, cover_url, parts, total_units, rating, is_favorite)
+values
+  ('My Hero Academia', 'manga', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx85486-INqnYx8gL3eX.jpg',
+   42, 430, 5, false),
+  ('Black Clover', 'manga', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx114652-b4VxxYpvU8id.png',
+   38, 392, 5, false),
+  ('Tougen Anki', 'manga', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx119968-dFbxdXwpkZ3s.jpg',
+   30, 287, 5, false),
+  ('One Piece', 'manga', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx30013-BeslEMqiPhlk.jpg',
+   115, 1196, 5, false),
+  ('Naruto', 'manga', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/nx30011-9yUF1dXWgDOx.jpg',
+   72, 700, 5, false),
+  ('Jujutsu Kaisen', 'manga', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx101517-H3TdM3g5ZUe9.jpg',
+   30, 271, 5, false),
+  ('Sakamoto Days', 'manga', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx125828-p78Z8SflkfmO.jpg',
+   28, 279, 5, false),
+  ('DanDaDan', 'manga', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx132029-prGF4gePdSKv.jpg',
+   25, 249, 5, false),
+  ('Kaiju No. 8', 'manga', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx120760-MtXvMgujLBpe.jpg',
+   16, 129, 5, false),
+  ('Solo Leveling', 'manga', 'completed',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx105398-b673Vt5ZSuz3.jpg',
+   15, 200, 5, false),
+  ('One Punch Man', 'manga', 'in_progress',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx74347-sZpmNJ5xLwRK.jpg',
+   37, null, 5, false),
+  ('Mashle', 'manga', 'in_progress',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx114960-pivAwNQDdiBa.jpg',
+   18, 162, 5, false),
+  ('Blue Lock', 'manga', 'in_progress',
+   'https://s4.anilist.co/file/anilistcdn/media/manga/cover/large/bx106130-yPNeuSu75ey1.jpg',
+   40, null, 5, false);
+
+-- Ranking: mi top de animes
+update public.works w
+  set ranking_position = r.pos
+  from unnest(array[
+    'Black Clover', 'One Piece', 'DanDaDan', 'Tougen Anki', 'One Punch Man', 'Jujutsu Kaisen',
+    'Demon Slayer'
+  ]) with ordinality as r (title, pos)
+  where w.title = r.title and w.type = 'anime';
