@@ -185,7 +185,7 @@ otakuteca/
 │   └── styles/         # Tema de Tailwind v4 y paleta propia
 ├── supabase/
 │   ├── migrations/     # 0001_init.sql: tablas, enums, triggers, políticas RLS y RPC
-│   └── seed.sql        # Datos de prueba, solo para la base local
+│   └── seeds/          # Seeders por tabla (géneros, obras, obra-género), solo para la base local
 ├── specs/              # Specs de cada feature (GitHub Spec Kit)
 └── public/             # og-image, íconos, manifest, robots y sitemap
 ```
@@ -207,7 +207,7 @@ git clone https://github.com/NiettoFrann/otakuteca.git
 cd otakuteca
 pnpm install
 
-# 2. Levantar Supabase local (aplica las migraciones y el seed)
+# 2. Levantar Supabase local (aplica las migraciones y los seeders)
 pnpm dlx supabase start     # API http://127.0.0.1:54321 · Studio http://127.0.0.1:54323
 pnpm dlx supabase status    # muestra la clave publicable local
 
@@ -256,7 +256,7 @@ El sitio se despliega en **Vercel** como SPA ([`vercel.json`](vercel.json) reesc
 `X-Robots-Tag: noindex, nofollow` en `/login` y `/dashboard/*`.
 
 1. Aplicar `supabase/migrations/0001_init.sql` al proyecto de Supabase de producción (**nunca**
-   `seed.sql`).
+   los seeders de `supabase/seeds/`).
 2. Desactivar el registro de usuarios y crear al administrador en `public.admins`.
 3. Cargar `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` de producción en las variables de
    entorno de Vercel y desplegar.

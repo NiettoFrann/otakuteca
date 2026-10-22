@@ -135,7 +135,8 @@ Commits en **inglés**, siguiendo [Conventional Commits](https://www.conventiona
 ## Supabase
 
 - Desarrollo y validación contra **Supabase local** (Docker): `pnpm dlx supabase start` aplica
-  `supabase/migrations/` y `supabase/seed.sql`; `pnpm dlx supabase db reset` vuelve al estado
+  `supabase/migrations/` y los seeders de `supabase/seeds/` (uno por tabla, en el orden de
+  `[db.seed].sql_paths` de `config.toml`); `pnpm dlx supabase db reset` vuelve al estado
   inicial (borra también los usuarios locales). La CLI no se agrega a `package.json`. El seed
   **nunca** se ejecuta en producción, que solo recibe la migración y el catálogo real cargado a mano.
 - Variables en `.env.local` (fuera de git), con los valores **locales**: `VITE_SUPABASE_URL` y
