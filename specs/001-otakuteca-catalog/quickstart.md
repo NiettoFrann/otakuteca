@@ -52,27 +52,26 @@ También borra los usuarios locales, así que después hay que repetir el paso 4
 
 ## Datos de prueba sugeridos
 
-`supabase/seeds/` los carga solo en la base local (`supabase start` o `db reset`). Catálogo
-base usado en los escenarios:
+`supabase/seeds/` los carga solo en la base local (`supabase start` o `db reset`). Es el catálogo
+real del Administrador (41 animes y 13 mangas), con portadas, temporadas o tomos, episodios o
+capítulos y 3–4 géneros por obra (los 29 géneros están en `01_genres.sql`):
 
-| Título | Tipo | Estado | Total / Vistos | Estrellas | Favorita | Géneros |
-|--------|------|--------|----------------|-----------|----------|---------|
-| Frieren | Anime | Viendo | 28 / 12 | 4,5 | sí | Fantasía, Aventura |
-| Fullmetal Alchemist: Brotherhood | Anime | Completado | 64 / 64 | 5 | sí | Acción, Fantasía |
-| Shingeki no Kyojin | Anime | Completado | 87 / 87 | 4 | sí | Acción |
-| Spy x Family | Anime | Pendiente | — | — | no | Comedia |
-| Mirai Nikki | Anime | Abandonado | 26 / 10 | 2 | no | Thriller |
-| Naruto | Anime | Completado | 220 / 220 | 3,5 | no | Shōnen |
-| Berserk | Manga | Leyendo | — / 120 | 5 | sí | Fantasía oscura |
-| Naruto | Manga | Completado | 700 / 700 | 4 | no | Shōnen |
-| Chainsaw Man | Manga | Pendiente | — | — | no | Acción |
-| Un isekai con un título de más de 150 caracteres para probar que la tarjeta no se rompa ni deforme la grilla en ninguna pantalla, ni chica ni grande, nunca jamás | Anime | Pendiente | — | — | no | — |
+| Grupo | Cant. | Estado | Obras usadas en los escenarios |
+|-------|-------|--------|--------------------------------|
+| Animes vistos | 23 | Completado | Black Clover, One Piece, Naruto, DanDaDan… (casi todos con 5★) |
+| Animes en curso | 3 | Viendo (0 vistos) | Frieren (3★, 0 / 38), Spy x Family (4★), The Apothecary Diaries (sin estrellas) |
+| Animes pendientes | 12 | Pendiente | Re:Zero (85 episodios), Call of the Night… Lord of Mysteries |
+| Animes abandonados | 3 | Abandonado (1★) | Mushoku Tensei, Baki, Record of Ragnarok |
+| Mangas leídos | 10 | Completado | Naruto, One Piece, Jujutsu Kaisen… |
+| Mangas en curso | 3 | Leyendo (0 leídos) | One Punch Man y Blue Lock (sin total), Mashle (0 / 162) |
 
-Ranking (incluido en el seed): 1 Shingeki no Kyojin, 2 Fullmetal Alchemist: Brotherhood.
-Frieren queda favorita **sin** posición.
+No hay mangas pendientes ni obras sin género.
 
-Valores esperados con ese catálogo: Inicio → **3** animes vistos, **4** favoritos,
-**1** manga leído.
+Ranking (incluido en el seed): 1 Black Clover, 2 One Piece, 3 DanDaDan, 4 Tougen Anki, 5 One Punch
+Man, 6 Jujutsu Kaisen, 7 Demon Slayer. Son las únicas 7 favoritas.
+
+Valores esperados con ese catálogo: Inicio → **23** animes vistos, **7** favoritos,
+**10** mangas leídos.
 
 **Orden de los escenarios**: V1–V3, V8 y V9 dan por hecho el seed recién cargado. V5–V7 y V10 lo
 modifican. Si hace falta, `db reset` (y el paso 4 del setup) entre medio.
@@ -81,40 +80,47 @@ modifican. Si hace falta, `db reset` (y el paso 4 del setup) entre medio.
 
 ### V1 — Vista pública sin cuenta (US1, FR-017, FR-019, SC-006)
 
-1. Abrir `/`. → Inicio con menú y los contadores 3 / 4 / 1. Sin pedido de login.
+1. Abrir `/`. → Inicio con menú y los contadores 23 / 7 / 10. Sin pedido de login.
 2. Recorrer cada ítem del menú. → Llegan las 7 secciones.
 3. Buscar en todas las páginas públicas (y en el HTML con *Ver código fuente* / DevTools) la
    palabra `login` o `dashboard`. → No aparece ningún enlace ni botón Agregar/Editar/Eliminar.
-4. En `/animes`, la tarjeta del isekai largo se recorta con `…` sin desalinear la grilla
-   (escritorio y modo celular de DevTools, 375 px). (SC-007)
+4. En `/animes`, la tarjeta de The Seven Deadly Sins: Four Knights of the Apocalypse (el título
+   más largo) se recorta con `…` sin desalinear la grilla (escritorio y modo celular de DevTools,
+   375 px). Para el caso extremo, renombrar una obra desde el panel con un título de 200
+   caracteres. (SC-007)
 5. Editar desde el panel la URL de portada de una obra a `https://example.com/no-existe.jpg`. →
    En la vista pública se ve la imagen de reemplazo, sin romper la tarjeta.
-6. Las favoritas se ven destacadas; Spy x Family muestra "Sin calificar" y no deja huecos.
+6. Las favoritas se ven destacadas; The Apothecary Diaries muestra "Sin calificar" y no deja
+   huecos.
 
 ### V2 — Detalle (US2, FR-018)
 
-1. Tocar la tarjeta de Frieren. → `/animes/<id>` con todos los datos, barra "12 / 28".
+1. Tocar la tarjeta de Frieren. → `/animes/<id>` con todos los datos, 2 temporadas y barra
+   "0 / 38".
 2. Copiar la URL y abrirla en otra ventana de incógnito. → Misma obra.
 3. Abrir `/animes/999999` y `/mangas/<id de Frieren>`. → "Obra no encontrada" con link al
    catálogo.
 
 ### V3 — Filtros (US3, FR-023, SC-003)
 
-1. `/mangas` → filtro Estado "Completado". → Solo Naruto (manga).
-2. `/animes` → "Solo favoritos". → Frieren, FMA:B, SnK.
-3. Agregar Estado "Viendo". → Solo Frieren. La URL refleja ambos filtros.
-4. Estado "Abandonado" + favoritos. → "Aún no hay obras en esta categoría" + "Ver todo".
+1. `/mangas` → filtro Estado "Completado". → Los 10 mangas leídos (todos menos One Punch Man,
+   Mashle y Blue Lock).
+2. `/animes` → "Solo favoritos". → Los 7 del Ranking.
+3. Sacar "Solo favoritos" y elegir Estado "Viendo". → Frieren, Spy x Family y The Apothecary
+   Diaries. La URL refleja el filtro.
+4. Volver a sumar "Solo favoritos" (Viendo + favoritos). → "Aún no hay obras en esta categoría" +
+   "Ver todo". La URL refleja ambos filtros.
 5. "Ver todo". → Vuelven todos los animes en un solo clic.
 6. Atrás del navegador restaura el filtro anterior.
-7. **Catálogo de 200 obras (SC-003)**: en el SQL Editor de Studio **local**, sumar 190 obras al
-   seed:
+7. **Catálogo de 200 obras (SC-003)**: en el SQL Editor de Studio **local**, sumar 146 obras a
+   las 54 del seed:
    ```sql
    insert into public.works (title, type, status, cover_url)
    select 'Obra de prueba ' || g,
           (case when g % 2 = 0 then 'anime' else 'manga' end)::public.work_type,
           (array['pending','in_progress','completed','dropped'])[1 + g % 4]::public.work_status,
           'https://example.com/cover-' || g || '.jpg'
-   from generate_series(1, 190) as g;
+   from generate_series(1, 146) as g;
    ```
    Recargar `/animes` y aplicar y quitar filtros. → La grilla responde al instante (< 1 s), sin
    paginación, y las portadas rotas muestran el reemplazo. Al terminar, `db reset`.
@@ -130,38 +136,43 @@ modifican. Si hace falta, `db reset` (y el paso 4 del setup) entre medio.
 
 ### V5 — Alta de obra (US5, FR-009–FR-013)
 
-1. Cargar «Dandadan» completa (anime, Viendo, total 12, vistos 5, géneros, reseñas, 4 estrellas).
+1. Cargar «Chainsaw Man» completa (anime, Viendo, total 12, vistos 5, géneros, reseñas, 4
+   estrellas).
    → Aparece en `/animes` y en su detalle (otra ventana, recargar).
 2. Intentar guardar sin título / sin portada / sin estado. → No guarda; mensaje en el campo.
 3. Cargar anime " naruto " (minúsculas y espacios). → "Ya cargaste «Naruto» como anime." +
    "Editar esa obra" lleva a su edición.
 4. Cargar manga "Frieren" (en el seed solo existe como anime). → Se acepta.
 5. Vistos 13 con total 12. → "No puede superar el total (12)".
-6. Cargar «Blue Lock» (anime, Pendiente) solo con título, tipo, estado y portada, dejando Vistos
+6. Cargar «Vinland Saga» (anime, Pendiente) solo con título, tipo, estado y portada, dejando Vistos
    vacío. → Se acepta (vistos = 0); la tarjeta se ve completa.
 7. Tiempo de alta completa con el formulario < 3 min. (SC-004)
 
 ### V6 — Edición, progreso y baja (US6, FR-014, FR-032)
 
-1. Chainsaw Man: Pendiente → Completado con total 200. → En público: "Completado", barra llena
-   "200 / 200", ya no figura en `/pendientes`.
-2. Frieren: vistos 12 → 13. → Barra "13 / 28" al recargar.
-3. Renombrar Mirai Nikki a "Frieren" (anime). → Error de duplicado.
-4. Eliminar Mirai Nikki → aparece confirmación; Cancelar → sigue intacta; Confirmar →
+1. Re:Zero: Pendiente → Completado (total 85). → En público: "Completado", barra llena
+   "85 / 85", ya no figura en `/pendientes`.
+2. Frieren: vistos 0 → 1. → Barra "1 / 38" al recargar.
+3. Renombrar Baki a "Frieren" (anime). → Error de duplicado.
+4. Eliminar Baki → aparece confirmación; Cancelar → sigue intacta; Confirmar →
    desaparece de panel, `/animes`, `/estadisticas`.
 
 ### V7 — Favoritas y Ranking (US7, FR-016, FR-026)
 
-1. `/ranking` → 1 SnK (4★), 2 FMA:B (5★): el orden respeta posiciones, no estrellas. Frieren no
-   aparece.
-2. En `/dashboard/ranking` intercambiar 1 y 2 y guardar. → Orden invertido, sin duplicados.
-3. Intentar agregar un 11.º anime. → No se permite.
-4. Desmarcar favorito de SnK. → Sale del Ranking y de "Solo favoritos"; deja de destacarse. En
-   `/ranking`, FMA:B pasa a verse como **#1** (sin hueco, aunque su posición guardada siga en 2).
-5. En `/dashboard/ranking`, agregar a Frieren debajo de FMA:B y guardar.
+1. `/ranking` → 1 Black Clover, 2 One Piece, 3 DanDaDan, 4 Tougen Anki, 5 One Punch Man,
+   6 Jujutsu Kaisen, 7 Demon Slayer. Frieren no aparece.
+2. En `/dashboard/ranking` intercambiar 1 y 2 y guardar. → One Piece #1 y Black Clover #2, sin
+   duplicados.
+3. Marcar como favoritos a Frieren, Solo Leveling, Blue Lock y Mashle. En `/dashboard/ranking`
+   sumar 3 de ellos (quedan 10) e intentar agregar el cuarto. → No se permite el 11.º. Recargar
+   sin guardar.
+4. Desmarcar favorito de One Piece. → Sale del Ranking y de "Solo favoritos"; deja de destacarse.
+   En `/ranking`, Black Clover pasa a verse como **#1** (sin hueco, aunque su posición guardada
+   siga en 2).
+5. En `/dashboard/ranking`, agregar a Frieren al final y guardar.
    Anotar el orden de `/animes`. → Guardar el Ranking no cambia el orden de la grilla.
-6. Eliminar FMA:B desde el panel. → `/ranking` muestra a Frieren como **#1**, sin hueco. En el
-   detalle de Frieren aparece "En mi top 10".
+6. Eliminar Black Clover desde el panel. → En `/ranking` los demás suben un lugar, sin hueco. En
+   el detalle de Frieren aparece "En mi top 10".
 7. Abrir `/dashboard/ranking` en dos pestañas. En la B, desmarcar a Frieren como favorita. En la A,
    guardar el Ranking sin recargar. → "No pudimos guardar el Ranking: hay más de 10 animes o
    alguno ya no es favorito. Recargá y probá de nuevo." y el Ranking anterior queda intacto.
@@ -171,20 +182,19 @@ modifican. Si hace falta, `db reset` (y el paso 4 del setup) entre medio.
 
 1. Comparar contadores de Inicio con un conteo manual de la tabla de datos de prueba.
 2. `/estadisticas`: gráfico por estado ("En curso" para Viendo/Leyendo), anime vs. manga y por
-   género. Con el seed recién cargado, Fantasía suma 2 (Frieren y FMA:B, que también suma en Acción) y el isekai
-   cuenta en "Sin género".
-3. Berserk (sin total) muestra "120 capítulos leídos", sin porcentaje.
+   género. Con el seed recién cargado, Acción suma 40 y Shōnen 37 (una obra cuenta en cada uno de
+   sus géneros) y no aparece "Sin género".
+3. One Punch Man (manga, sin total) muestra "0 capítulos leídos", sin porcentaje.
 4. Base vacía: en el SQL Editor de Studio **local**, `truncate public.works, public.genres
    restart identity cascade;`. → Inicio en 0 / 0 / 0 y gráficos con estado vacío, sin errores en
    consola. Después, `db reset` (y el paso 4 del setup). **Nunca** correr esto en producción.
 
 ### V9 — Pendientes y Ruleta (US9, FR-027, FR-028)
 
-1. `/pendientes` → Spy x Family, Chainsaw Man (si sigue pendiente), isekai largo. Nada más.
+1. `/pendientes` → Los 12 animes pendientes (Re:Zero solo si no corriste V6). Ningún manga.
 2. `/ruleta` → "Anime" elegido por defecto. Girar 5 veces: siempre un anime pendiente, nunca el
-   mismo dos veces seguidas (hay 2).
-3. Cambiar a "Manga" y girar. → Solo mangas pendientes. Si no hay: mensaje amigable y botón para
-   pasar a Anime.
+   mismo dos veces seguidas (hay 12).
+3. Cambiar a "Manga". → No hay mangas pendientes: mensaje amigable y botón para pasar a Anime.
 
 ### V10 — Sesión vencida (FR-015, SC-009)
 
