@@ -16,7 +16,7 @@ spec. Rutas y mensajes esperados: [contracts/routes.md](./contracts/routes.md). 
 
 **Regla de oro**: todo se desarrolla y se valida en local. El proyecto de Supabase de producción
 arranca vacío, solo recibe la migración y el catálogo real cargado a mano, y nunca ejecuta
-`supabase/seed.sql`.
+los seeders de `supabase/seeds/`.
 
 ## Setup local (una vez)
 
@@ -25,7 +25,7 @@ arranca vacío, solo recibe la migración y el catálogo real cargado a mano, y 
    pnpm dlx supabase init
    ```
    En `supabase/config.toml`, poner `enable_signup = false` en la sección `[auth]` (FR-003).
-2. **Levantar la base local** (aplica `supabase/migrations/` y `supabase/seed.sql`):
+2. **Levantar la base local** (aplica `supabase/migrations/` y `supabase/seeds/`):
    ```bash
    pnpm dlx supabase start     # API http://127.0.0.1:54321 · Studio http://127.0.0.1:54323
    pnpm dlx supabase status    # muestra la clave publicable local
@@ -52,7 +52,7 @@ También borra los usuarios locales, así que después hay que repetir el paso 4
 
 ## Datos de prueba sugeridos
 
-`supabase/seed.sql` los carga solo en la base local (`supabase start` o `db reset`). Catálogo
+`supabase/seeds/` los carga solo en la base local (`supabase start` o `db reset`). Catálogo
 base usado en los escenarios:
 
 | Título | Tipo | Estado | Total / Vistos | Estrellas | Favorita | Géneros |
@@ -252,7 +252,7 @@ Con V1–V10 y los `curl` en verde contra la base local, recién ahí se publica
    - SQL Editor del proyecto → pegar y ejecutar `supabase/migrations/0001_init.sql`.
    - `pnpm dlx supabase link --project-ref <ref>` y después `pnpm dlx supabase db push`.
 
-   **No** ejecutar `supabase/seed.sql`.
+   **No** ejecutar los seeders de `supabase/seeds/`.
 2. **Desactivar registro**: Authentication → Sign In / Providers → Email: desactivar
    *"Allow new users to sign up"*.
 3. **Crear al Administrador**: Authentication → Users → *Add user* (*Auto Confirm*) y en el SQL
